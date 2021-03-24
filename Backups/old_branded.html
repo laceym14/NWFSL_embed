@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <title>Northwest Florida Sentinel Landscapes Web App</title>
+
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+     
+    </style>
+
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.18/esri/themes/light/main.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"
+    />
+
+    <script src="https://js.arcgis.com/4.18/"></script>
+
+    <script>
+      require([
+        "esri/views/MapView",
+        "esri/WebMap",
+        "esri/widgets/LayerList",
+        "esri/widgets/Home",
+        "esri/widgets/BasemapGallery",
+        "esri/widgets/Locate",
+        "esri/widgets/BasemapToggle",
+        "esri/widgets/Search",
+        "esri/widgets/Fullscreen",
+        "esri/widgets/Print",
+        "esri/widgets/ScaleBar"
+      ], function (
+        MapView,
+        WebMap,
+        LayerList,
+        Home,
+        BasemapGallery,
+        Locate,
+        BasemapToggle,
+        Search,
+        Fullscreen,
+        Print,
+        ScaleBar
+      ) {
+        /************************************************************
+         * Creates a new WebMap instance. A WebMap must reference
+         * a PortalItem ID that represents a WebMap saved to
+         * arcgis.com or an on-premise portal.
+         *
+         * To load a WebMap from an on-premise portal, set the portal
+         * url with esriConfig.portalUrl.
+         ************************************************************/
+        var webmap = new WebMap({
+          portalItem: {
+            // autocasts as new PortalItem()
+            id: "aba377be4a3142c5aedb6618c4b20a61"
+          }
+        });
+
+        /************************************************************
+         * Set the WebMap instance to the map property in a MapView.
+         ************************************************************/
+        var view = new MapView({
+          map: webmap,
+          container: "viewDiv"
+        });
+
+        view.when(function () {
+          var layerList = new LayerList({
+            view: view,
+            listItemCreatedFunction: function (event) {
+              const item = event.item;
+              if (item.layer.type != "group") {
+                // don't show legend twice
+                item.panel = {
+                  content: "legend",
+                  open: false
+                };
+              }
+            }
+          });
+
+          // Add widget to the top right corner of the view
+          view.ui.add(layerList, "top-right");
+        });
+
+        // places the logo div in the bottom right corner of the view
+        view.ui.add("logoDiv", "bottom-right");
+        // places the search widget in the top right corner of the view
+        //view.ui.add(Search, "top-right");
+
+        var locateBtn = new Locate({
+          view: view
+        });
+
+        var searchWidget = new Search({
+          view: view
+        });
+
+        // Add the search widget to the top right corner of the view
+        view.ui.add(searchWidget, {
+          position: "top-right"
+        });
+
+        var toggle = new BasemapToggle({
+          view: view,
+          nextBasemap: "hybrid"
+        });
+        // Adds an instance of BasemapToggle widget to the
+        // top right of the view.
+        view.ui.add(toggle, "bottom-left");
+
+        var scaleBar = new ScaleBar({
+          view: view
+        });
+        // Add widget to the bottom left corner of the view
+        view.ui.add(scaleBar, {
+          position: "bottom-left"
+        });
+
+        //var basemapGallery = new BasemapGallery({
+        //  view: view
+        //});
+
+        // Add the widget to the top-left corner of the view
+        //view.ui.add(basemapGallery, {
+        //  position: "top-left"
+        //});
+
+        var homeBtn = new Home({
+          view: view
+        });
+
+        // Add the home button to the top left corner of the view
+        view.ui.add(homeBtn, "top-left");
+
+        // Add the locate widget to the top left corner of the view
+        view.ui.add(locateBtn, {
+          position: "top-left"
+        });
+
+        //var print = new Print({
+        //  view: view
+        //});
+
+        // Adds widget below other elements in the top left corner of the view
+        //view.ui.add(print, {
+        //  position: "top-left"
+        //});
+
+        fullscreen = new Fullscreen({
+          view: view
+        });
+        view.ui.add(fullscreen, "top-left");
+      });
+    </script>
+  </head>
+
+  <body>
+        <div id="viewDiv"></div>
+        <div id="logoDiv" class="defenders-logo">
+          <a href="https://defenders.org/">
+            <img
+              alt="Defenders of Widlife"
+              src="https://defenders-cci.org/img/DOW_small.png"
+              height="50"
+            />
+          </a>
+        </div>
+  </body>
+</html>
